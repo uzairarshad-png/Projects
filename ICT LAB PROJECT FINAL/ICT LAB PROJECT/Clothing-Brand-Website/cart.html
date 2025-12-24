@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section id="header">
+        <a href="#"><img src="images/FashionLogo (1).png" class="logo" alt=""></a>
+    <div>
+       <ul id="navbar">
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li id="lg-bag"><a class="active" href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a></li>
+       </ul>
+    </div>
+    </section>
+    <section id="page-header" class="about-header">
+        <h2>#lets's_talk</h2>
+        <p>LEAVE A MESSAGE, We love to hear from you!</p>
+    </section>
+<section id="cart" class="section-p1">
+    <table width="100">
+        <thead>
+            <tr>
+                <td>Remove</td>
+                <td>Image</td>
+                <td>Product</td>
+                <td>Price</td>
+                <td>Quantity</td>
+                <td>Subtotal</td>
+            
+            </tr>
+        </thead>
+        <tbody id="cart-body">
+        </tbody>
+    </table>
+</section>
+   <section id="cart-add" class="section-p1">
+    <div id="subtotal">
+        <h3>Cart Totals</h3>
+        <table>
+            <tr>
+            <td>Cart Subtotal</td>
+            <td id="cart-subtotal">$0.00</td>
+        </tr>
+        <tr>
+            <td>Shipping</td>
+            <td>Free</td>
+            </tr>
+            <tr>
+            <td><strong>Total</strong></td>
+            <td id="cart-total"><strong>$0.00</strong></td>
+        </tr>
+            
+        </table>
+        <button class="normal">Checkout</button>
+    </div>
+   </section>
+    <footer class="section-p1">
+        <div class="col">
+            
+            <h4>Contact</h4>
+            <p><strong>E-mail:</strong>abc@gmail.com</p>
+            <p><strong>Address: </strong> Pakistan</p>
+            <p><strong>Phone:</strong>+92 12345678910</p>
+            </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+              <a href="#">Privacy Policy</a>
+                <a href="#">Terms & Conditions</a>
+                    <a href="#">Contact us</a>
+
+        </div>
+        <div class="col">
+            <h4>Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+              <a href="#">My Wishlists</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="copyright">
+                <p>© 2025 GENZWEAR. All rights reserved.</p>
+            </div>
+    </footer>
+<script>
+const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function loadCart() {
+    const tbody = document.getElementById('cart-body');
+    tbody.innerHTML = '';
+    let total = 0;
+    cart.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><a href="#" onclick="removeItem(${index}); return false;"><i class="fas fa-times-circle"></i></a></td>
+            <td><img src="${item.img}" alt=""></td>
+            <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td><input type="number" value="${item.quantity}" onchange="updateQuantity(${index}, this.value)"></td>
+            <td>$${subtotal.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+    document.getElementById('cart-subtotal').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+}
+
+function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    loadCart();
+    updateCartCount();
+}
+
+function updateQuantity(index, qty) {
+    cart[index].quantity = parseInt(qty);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    loadCart();
+}
+
+function updateCartCount() {
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const bag = document.getElementById('lg-bag');
+    let countSpan = bag.querySelector('.cart-count');
+    if (!countSpan) {
+        countSpan = document.createElement('span');
+        countSpan.className = 'cart-count';
+        bag.appendChild(countSpan);
+    }
+    countSpan.textContent = count > 0 ? count : '';
+}
+
+window.onload = () => {
+    loadCart();
+    updateCartCount();
+};
+</script>
+</body>
+</html>
