@@ -1,7 +1,5 @@
 # Clothing-Brand-Website
-Next Style is a responsive e-commerce Website built using only HTML and CSS. This project showcases a modern and clean fashion store layout that includes product listings, featured banners, and responsive navigation ideal for showcasing clothing brands or online fashion stores.
-## 🌐 Live Website
-[Click here to view the live site](https://muhammadusmandasti.github.io/Clothing-Brand-Website/)
+GENZWEAR is a responsive e-commerce Website built using only HTML and CSS. This project showcases a modern and clean fashion store layout that includes product listings, featured banners, and responsive navigation ideal for showcasing clothing brands or online fashion stores
 ##  Technologies Used
 - HTML5
 - CSS3
@@ -21,9 +19,10 @@ This project is part of my beginner front-end development journey. It was create
 ## Contact
 Feel free to reach out for feedback or suggestions!
 
-Muhammad Usman Dasti
+Uzair Arshad
 
 
--Gmail:  muhammadusmandasti07@gmail.com
+-Gmail:  uziararshad@gmail.com
 
--[LinkedIn](https://www.linkedin.com/in/muhammad-usman-dasti-72058b322/)
+-[LinkedIn](https://www.linkedin.com/in/uzair-arshad-96a096382)
+
