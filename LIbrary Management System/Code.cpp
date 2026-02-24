@@ -99,7 +99,7 @@ bool findBook(long long isbn, Book& out) {
     if (!in.is_open()) return false;
     Book b;
     while (in >> b.isbn) {
-        in.ignore(); // skip single space
+        in.ignore(); // skip single delimiter char (now expected to be '|')
         getline(in, b.title, '|');
         getline(in, b.author, '|');
         getline(in, b.category, '|');
@@ -191,7 +191,7 @@ bool updateBookQuantity(long long isbn, int delta) {
             if (b.quantity < 0) b.quantity = 0;
             found = true;
         }
-        out << b.isbn << " " << b.title << "|" << b.author << "|" << b.category << "|" << b.quantity << endl;
+        out << b.isbn << "|" << b.title << "|" << b.author << "|" << b.category << "|" << b.quantity << endl;
     }
     in.close(); out.close();
 
@@ -235,7 +235,7 @@ bool setBookQuantity(long long isbn, int newQuantity) {
     Book b;
     bool found = false;
     while (in >> b.isbn) {
-        in.ignore(); // skip space
+        in.ignore(); // skip delimiter
         getline(in, b.title, '|');
         getline(in, b.author, '|');
         getline(in, b.category, '|');
@@ -245,7 +245,7 @@ bool setBookQuantity(long long isbn, int newQuantity) {
             if (b.quantity < 0) b.quantity = 0;
             found = true;
         }
-        out << b.isbn << " " << b.title << "|" << b.author << "|" << b.category << "|" << b.quantity << endl;
+        out << b.isbn << "|" << b.title << "|" << b.author << "|" << b.category << "|" << b.quantity << endl;
     }
     in.close(); out.close();
 
@@ -321,7 +321,7 @@ if (b.quantity <= 0) {
 }
 
 ofstream file("books.txt", ios::app);
-file << b.isbn << " " << b.title << "|" << b.author << "|" << b.category << "|" << b.quantity << endl;
+file << b.isbn << "|" << b.title << "|" << b.author << "|" << b.category << "|" << b.quantity << endl;
 cout << "Book Added Successfully!\n";
 }
 
@@ -397,10 +397,10 @@ if (userExists(u.id, temp)) {
 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 cout << "Enter Name: ";
 getline(cin, u.name);
-NIC: 
+NIC:
 {
-cout << "Enter CNIC: ";
-cin >> u.cnic;
+    cout << "Enter CNIC: ";
+    cin >> u.cnic;
 }
 if (cin.fail()) {
     cin.clear();
@@ -518,44 +518,44 @@ if (!validateISBN(isbn)) {
     goto IN;
 }
 
-    Book b;
-    if (!findBook(isbn, b)) {
-        cout << "Book with ISBN " << isbn << " not found.\n";
-        return;
-    }
+Book b;
+if (!findBook(isbn, b)) {
+    cout << "Book with ISBN " << isbn << " not found.\n";
+    return;
+}
 
-    cout << "Found: \"" << b.title << "\" by " << b.author << " | Current Qty: " << b.quantity << "\n";
+cout << "Found: \"" << b.title << "\" by " << b.author << " | Current Qty: " << b.quantity << "\n";
 
-    // get new quantity
-    int newQty;
+// get new quantity
+int newQty;
 GET_QTY:
-    {
-        cout << "Enter new stock quantity (0 or greater): ";
-        cin >> newQty;
-    }
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid input! Please enter a whole number.\n";
-        goto GET_QTY;
-    }
-    // check for stray characters after the number
-    if (cin.peek() != '\n') {
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid input! No extra characters allowed.\n";
-        goto GET_QTY;
-    }
-    if (newQty < 0) {
-        cout << "Quantity must be 0 or greater.\n";
-        goto GET_QTY;
-    }
+{
+    cout << "Enter new stock quantity (0 or greater): ";
+    cin >> newQty;
+}
+if (cin.fail()) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Invalid input! Please enter a whole number.\n";
+    goto GET_QTY;
+}
+// check for stray characters after the number
+if (cin.peek() != '\n') {
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Invalid input! No extra characters allowed.\n";
+    goto GET_QTY;
+}
+if (newQty < 0) {
+    cout << "Quantity must be 0 or greater.\n";
+    goto GET_QTY;
+}
 
-    if (!setBookQuantity(isbn, newQty)) {
-        cout << "Failed to update book stock. (I/O error)\n";
-        return;
-    }
+if (!setBookQuantity(isbn, newQty)) {
+    cout << "Failed to update book stock. (I/O error)\n";
+    return;
+}
 
-    cout << "Stock updated successfully." << endl;
+cout << "Stock updated successfully." << endl;
 }
 
 void searchBook() {
@@ -730,6 +730,7 @@ ISSUE_SEARCH_MENU:
 
         // Check if extra characters exist
         if (cin.peek() != '\n') {
+            cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Invalid input! No extra characters allowed.\n";
             goto ISBN_ASK;
@@ -892,7 +893,7 @@ ISSUE_DATE_INPUT:
         cout << "Failed to record issued book. Please try again.\n";
         return;
     }
-    outf << ib.isbn << " " << ib.title << "|" << ib.author << "|" << ib.category << "|" << userID << "|" << ib.issueDate << "|" << ib.issuedby << endl;
+    outf << ib.isbn << "|" << ib.title << "|" << ib.author << "|" << ib.category << "|" << userID << "|" << ib.issueDate << "|" << ib.issuedby << endl;
     if (!outf) {
         updateBookQuantity(selectedIsbn, +1);
         cout << "Failed to write issued record. Operation rolled back.\n";
@@ -1174,7 +1175,7 @@ CONFIRM_UID:
     }
     for (int i = 0; i < (int)records.size(); ++i) {
         if (i == targetIndex) continue;
-        out << records[i].isbn << " " << records[i].title << "|" << records[i].author << "|" << records[i].category << "|" << records[i].userStr << "|" << records[i].issueDate << "|" << records[i].issuedby << endl;
+        out << records[i].isbn << "|" << records[i].title << "|" << records[i].author << "|" << records[i].category << "|" << records[i].userStr << "|" << records[i].issueDate << "|" << records[i].issuedby << endl;
     }
     out.close();
 
@@ -1255,7 +1256,7 @@ MISPLACED_SEARCH_MENU:
         }
         if (!validateISBN(selectedIsbn)) {
             cout << "Invalid ISBN!\n";
-			goto MIS_ISBN;
+            goto MIS_ISBN;
         }
         if (!findBook(selectedIsbn, selectedBook)) {
             cout << "Book not found!\n";
@@ -1282,8 +1283,8 @@ MISPLACED_SEARCH_MENU:
             }
 
             struct Hit {
-                long long isbn; 
-                Book b; 
+                long long isbn;
+                Book b;
             };
             vector<Hit> hits;
             Book b;
@@ -1418,7 +1419,7 @@ MIS_REASON:
             cout << "Failed to record misplaced book. Please try again.\n";
             return;
         }
-        outf << mb.isbn << " " << mb.title << "|" << mb.author << "|" << mb.category << "|" << mb.reason << "|" << mb.reportDate << "|" << mb.misplacedby << endl;
+        outf << mb.isbn << "|" << mb.title << "|" << mb.author << "|" << mb.category << "|" << mb.reason << "|" << mb.reportDate << "|" << mb.misplacedby << endl;
         if (!outf) {
             updateBookQuantity(mb.isbn, +1);
             cout << "Failed to write misplaced record. Operation rolled back.\n";
@@ -1433,21 +1434,20 @@ MIS_REASON:
             ifstream inUsers("users.txt");
             ofstream tmp("temp.txt");
             if (inUsers.is_open() && tmp.is_open()) {
+                string uline;
                 user uu;
                 bool blocked = false;
-                while (inUsers >> uu.id) {
-                    inUsers.ignore();
-                    getline(inUsers, uu.name, '|');
-                    inUsers >> uu.cnic;
-                    inUsers.ignore();
-                    inUsers >> uu.contact;
-                    inUsers.ignore();
-                    getline(inUsers, uu.status);
-                    if (uu.id == userID) {
-                        uu.status = "BLOCKED";
-                        blocked = true;
+                while (getline(inUsers, uline)) {
+                    if (parseUserLine(uline, uu)) {
+                        if (uu.id == userID) {
+                            uu.status = "BLOCKED";
+                            blocked = true;
+                        }
+                        tmp << formatUserLine(uu) << '\n';
                     }
-                    tmp << uu.id << " " << uu.name << "|" << uu.cnic << "|" << uu.contact << "|" << uu.status << endl;
+                    else {
+                        tmp << uline << '\n';
+                    }
                 }
                 inUsers.close();
                 tmp.close();
@@ -1550,7 +1550,7 @@ void showIssuedBooks() {
     while (true) {
         long long isbn;
         if (!(file >> isbn)) break;
-        file.ignore(); // skip the single space after ISBN
+        file.ignore(); // skip the single delimiter after ISBN
 
         string title, author, category, userStr, issueDate, issuedby;
         if (!getline(file, title, '|')) break;
@@ -1611,7 +1611,7 @@ UNBLOCK_INPUT:
         cout << "Enter User ID [4-digits] to unblock: ";
         cin >> id;
     }
-    
+
     if (cin.fail()) {
         cin.clear();
         cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
@@ -1620,7 +1620,7 @@ UNBLOCK_INPUT:
     }
     // Check if extra characters exist
     if (cin.peek() != '\n') {
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
         cout << "Invalid input! No extra characters allowed.\n";
         goto UNBLOCK_INPUT;
     }
